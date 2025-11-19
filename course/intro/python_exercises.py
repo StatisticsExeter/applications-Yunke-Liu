@@ -1,75 +1,77 @@
-def sum_list(values):
-    """Return the sum of a list of numbers."""
-    return sum(values)
+def sum_list(numbers):
+    """Given a list of integers 'numbers'
+    return the sum of this list."""
+    return sum(numbers)
 
 
-def max_value(values):
-    """Return the maximum value in a non-empty list of numbers."""
-    if not values:
-        raise ValueError("values must not be empty")
-    return max(values)
+def max_value(numbers):
+    """Given a list of numbers 'numbers'
+    return the maximum value of this list."""
+    if not numbers:
+        raise ValueError("List is empty")
+    return max(numbers)
 
 
 def reverse_string(s):
-    """Return the reverse of a string."""
+    """Given a string 'string'
+    return the reversed version of the input string."""
     return s[::-1]
 
 
-def filter_even(values):
-    """Return a list of even numbers from the input list."""
-    return [v for v in values if v % 2 == 0]
+def filter_even(numbers):
+    """Given a list of numbers 'numbers'
+    return a list containing only the even numbers from the input list."""
+    return [n for n in numbers if n % 2 == 0]
 
 
 def get_fifth_row(df):
-    """Return the 5th row (index 4) of a DataFrame.
-    Raise IndexError if the dataframe has fewer than 5 rows.
-    """
-    if len(df) < 5:
+    """Given a dataframe 'df'
+    return the fifth row of this as a pandas DataFrame."""
+    if df.shape[0] < 5:
         raise IndexError("DataFrame has fewer than 5 rows")
     return df.iloc[4]
 
 
 def column_mean(df, column):
-    """Return the mean of the specified column.
-    Raise KeyError if the column does not exist.
-    Return nan if the column is empty.
-    """
+    """Given a dataframe 'df' and the name of a column 'column'
+    return the mean of the specified column in a pandas DataFrame."""
     if column not in df.columns:
-        raise KeyError(f"Column '{column}' not found")
-
-    series = df[column]
-    if len(series) == 0:
+        raise KeyError(f"Column'{column}' not found") 
+      
+    col= df[column]
+    if len(col) == 0:
         return float('nan')
-
-    return series.mean()
+      
+    return col.mean()
 
 
 def lookup_key(d, key):
-    """Return the value for `key` in dictionary `d`.
-    Return None if key does not exist.
-    """
+    """Given a dictionary 'd' and a key 'key'
+    return the value associated with the key in the dictionary."""
     return d.get(key, None)
 
 
-def count_occurrences(values):
-    """Return a dictionary counting occurrences of each element in a list."""
+def count_occurrences(lst):
+    """Given a list 'lst'
+    return a dictionary with counts of each unique element in the list."""
     counts = {}
-    for v in values:
-        counts[v] = counts.get(v, 0) + 1
+    for item in lst:
+        counts[item] = counts.get(item, 0) +1
     return counts
 
 
-def list_to_string(values):
-    """Convert a list of strings into a comma-separated string."""
-    return ",".join(values)
+def drop_missing(df):
+    """Given a dataframe 'df' with some rows containing missing values,
+    return a DataFrame with rows containing missing values removed."""
+    return df.dropna()
 
 
-def parse_date(date_str):
-    """Parse a YYYY-MM-DD string into a datetime.date object.
-    Raise ValueError if the string is invalid.
-    """
-    import datetime
-    try:
-        return datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
-    except ValueError:
-        raise ValueError("Invalid date format")
+def value_counts_df(df, column):
+    """Given a dataframe 'df' with various columns and the name of one of those columns 'column',
+    return a DataFrame with value counts of the specified column."""
+    if column not in df.columns:
+        raise KeyError(f"Column '{column}' not found")
+    
+    counts = df[column].value_counts().reset_index()
+    counts.columns = [column, 'count']
+    return counts
