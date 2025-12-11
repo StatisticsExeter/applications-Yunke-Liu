@@ -83,3 +83,52 @@ def _scatter_clusters(df):
        title = "PCA Scatter Plot Colored by Cluster Labels"
     )
     return fig
+  
+  
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+import plotly.express as px
+import pandas as pd
+
+def dbscan_analysis():
+    """Perform DBSCAN clustering on the collision dataset and produce a PCA scatter plot."""
+
+    from course.utils import find_project_root
+    base_dir = find_project_root()
+    data_path = base_dir / "data_cache" / "la_collision.csv"
+
+    # Load data
+    df = pd.read_csv(data_path)
+
+    # Standardise
+    scaler = StandardScaler()
+    df_scaled = scaler.fit_transform(df)
+
+    # Run PCA for plotting
+    from sklearn.decomposition import PCA
+    pca = PCA(n_components=2)
+    df_pca = pca.fit_transform(df_scaled)
+
+    df_plot = pd.DataFrame({
+        "PC1": df_pca[:, 0],
+        "PC2": df_pca[:, 1],
+    })
+
+    # DBSCAN clustering
+    db = DBSCAN(eps=0.8, min_samples=5).fit(df_scaled)
+    df_plot["cluster"] = db.labels_.astype(str)
+
+    # Plot clusters
+    fig = px.scatter(
+        df_plot,
+        x="PC1",
+        y="PC2",
+        color="cluster",
+        title="DBSCAN Clustering on PCA Projection"
+    )
+
+    # Save output
+    outpath = base_dir / "data_cache" / "vignettes" / "unsupervised_classification" / "dbscan_scatter.html"
+    fig.write_html(outpath)
+
+    print(f"DBSCAN plot saved to {outpath}")
